@@ -1,4 +1,11 @@
+/*
+* can_common.cpp
+*
+* Modified by : WimBo
+*/
+
 #include <can_common.h>
+#include <string.h>
 
 //CAN FD only allows discrete frame lengths after the normal CAN 8 byte limit. They are encoded below
 //as a FLASH based look up table for ease of use
@@ -57,7 +64,7 @@ void CANListener::setCallback(uint8_t mailBox)
 		callbacksActive |= (1<<mailBox);
 	}
 }
-
+ 
 void CANListener::removeCallback(uint8_t mailBox)
 {
 	if ( mailBox < numFilters )
@@ -101,7 +108,7 @@ Some functions in CAN_COMMON are declared = 0 which means you HAVE to reimplemen
 and they've got blank or very simple implementations below.
 */
 
-CAN_COMMON::CAN_COMMON(int numFilt)
+void CAN_COMMON::numfilt_init(int numFilt)
 {
     numFilters = numFilt;
     memset(cbCANFrame, 0, 4 * numFilters);
@@ -111,7 +118,6 @@ CAN_COMMON::CAN_COMMON(int numFilt)
 	cbGeneralFD = NULL;
     enablePin = 255;
 	busSpeed = 0;
-	fd_DataSpeed = 0;
 	faulted = false;
     rxFault = false;
     txFault = false;
@@ -213,7 +219,7 @@ uint32_t CAN_COMMON::getDataSpeedFD()
 	return 0;
 }
 
-boolean CAN_COMMON::attachObj(CANListener *listener)
+bool CAN_COMMON::attachObj(CANListener *listener)
 {
 	for (int i = 0; i < SIZE_LISTENERS; i++)
 	{
@@ -227,7 +233,7 @@ boolean CAN_COMMON::attachObj(CANListener *listener)
 	return false;
 }
 
-boolean CAN_COMMON::detachObj(CANListener *listener)
+bool CAN_COMMON::detachObj(CANListener *listener)
 {
 	for (int i = 0; i < SIZE_LISTENERS; i++)
 	{
